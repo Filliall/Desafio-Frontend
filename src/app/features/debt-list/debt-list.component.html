@@ -43,11 +43,7 @@
       </div>
     </mat-card-content>
     <mat-card-actions>
-      <button
-        mat-button
-        color="primary"
-        routerLink="['/debts', debt.debtNumber]"
-      >
+      <button mat-button color="primary" (click)="viewDetails(debt)">
         Detalhes
       </button>
     </mat-card-actions>

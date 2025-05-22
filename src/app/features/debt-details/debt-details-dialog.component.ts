@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -17,7 +17,11 @@ import { DebtService } from '../../core/services/debt.service';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgxMaskPipe } from 'ngx-mask';
-
+import {
+  MAT_DIALOG_DATA,
+  MatDialogRef,
+  MatDialogModule,
+} from '@angular/material/dialog';
 @Component({
   imports: [
     FormsModule,
@@ -32,41 +36,25 @@ import { NgxMaskPipe } from 'ngx-mask';
     MatButtonModule,
     MatCardModule,
     MatTableModule,
+    MatDialogModule,
     MatProgressSpinnerModule,
   ],
   selector: 'app-debt-details',
-  templateUrl: './debt-details.component.html',
-  styleUrls: ['./debt-details.component.css'],
-})
-export class DebtDetailsComponent implements OnInit {
-  debt: Debt | null = null;
-  isLoading = false;
 
+  templateUrl: './debt-details-dialog.component.html',
+  styleUrls: ['./debt-details-dialog.component.css'],
+})
+export class DebtDetailsDialogComponent {
   constructor(
-    private route: ActivatedRoute,
-    private debtService: DebtService
+    public dialogRef: MatDialogRef<DebtDetailsDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: { debt: Debt }
   ) {}
 
-  ngOnInit(): void {
-    const debtNumber = this.route.snapshot.paramMap.get('debtNumber');
-    if (debtNumber) {
-      this.loadDebtDetails(debtNumber);
-    }
-  }
-
-  loadDebtDetails(debtNumber: string): void {
-    this.isLoading = true;
-    this.debtService.getDebtDetails(debtNumber).subscribe({
-      next: (debt) => {
-        this.debt = debt;
-        this.isLoading = false;
-      },
-      error: () => (this.isLoading = false),
-    });
+  close(): void {
+    this.dialogRef.close();
   }
 
   calculateTotal(): number {
-    if (!this.debt) return 0;
-    return this.debt.installments.reduce((sum, i) => sum + i.value, 0);
+    return this.data.debt.installments.reduce((sum, i) => sum + i.value, 0);
   }
 }

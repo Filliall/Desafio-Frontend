@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
+import { DialogService } from '../../core/services/dialog.service';
 
 @Component({
   selector: 'app-debt-list',
@@ -34,10 +35,23 @@ export class DebtListComponent implements OnInit {
   referenceDate: Date = new Date();
   isLoading = false;
 
-  constructor(private debtService: DebtService) {}
+  constructor(
+    private debtService: DebtService,
+    private dialogService: DialogService
+  ) {}
 
   ngOnInit(): void {
     this.loadDebts();
+  }
+
+  viewDetails(debt: any): void {
+    // Carregar detalhes completos antes de abrir o diálogo
+    this.debtService.getDebtDetails(debt.debtNumber).subscribe({
+      next: (debtDetails) => {
+        this.dialogService.openDebtDetails(debtDetails);
+      },
+      error: (err) => console.error('Erro ao carregar detalhes:', err),
+    });
   }
 
   loadDebts(): void {

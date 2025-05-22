@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Detalhes da Dívida: {{ data.debt.debtNumber }}</h2>
+
+<mat-dialog-content>
+  <div class="debt-info">
+    <div><strong>Devedor:</strong> {{ data.debt.debtorName }}</div>
+    <div>
+      <strong>CPF:</strong> {{ data.debt.debtorCPF | mask : "000.000.000-00" }}
+    </div>
+    <div><strong>Juros:</strong> {{ data.debt.interestRate }}%</div>
+    <div><strong>Multa:</strong> {{ data.debt.fineRate }}%</div>
+    <div>
+      <strong>Total Original:</strong> {{ calculateTotal() | currency : "BRL" }}
+    </div>
+  </div>
+
+  <h3>Parcelas</h3>
+  <mat-table [dataSource]="data.debt.installments">
+    <!-- Colunas (mesmas do exemplo anterior) -->
+    ...
+  </mat-table>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Fechar</button>
+</mat-dialog-actions>
