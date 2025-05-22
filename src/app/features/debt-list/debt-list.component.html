@@ -1,0 +1,55 @@
+<div class="container">
+  <h2>Listagem de Títulos em Atraso</h2>
+
+  <div class="filter-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Data de Referência</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [(ngModel)]="referenceDate"
+        (dateChange)="onDateChange()"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!isLoading && debts.length === 0" class="no-data">
+    Nenhum título encontrado.
+  </div>
+
+  <mat-card *ngFor="let debt of debts" class="debt-card">
+    <mat-card-header>
+      <mat-card-title>{{ debt.debtNumber }}</mat-card-title>
+      <mat-card-subtitle>{{ debt.debtorName }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="debt-info">
+        <div><strong>Parcelas:</strong> {{ debt.installmentCount }}</div>
+        <div>
+          <strong>Valor Original:</strong>
+          {{ debt.originalAmount | currency : "BRL" }}
+        </div>
+        <div><strong>Dias em Atraso:</strong> {{ debt.daysOverdue }}</div>
+        <div>
+          <strong>Valor Atualizado:</strong>
+          {{ debt.updatedAmount | currency : "BRL" }}
+        </div>
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-button
+        color="primary"
+        routerLink="['/debts', debt.debtNumber]"
+      >
+        Detalhes
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,122 @@
+<div class="container">
+  <h1 class="mat-headline-4">Cadastrar Nova Dívida</h1>
+
+  <form [formGroup]="debtForm" (ngSubmit)="onSubmit()">
+    <!-- Seção de Dados Principais -->
+    <div class="form-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Número do Título</mat-label>
+        <input matInput formControlName="debtNumber" />
+        <mat-error *ngIf="debtForm.get('debtNumber')?.hasError('required')">
+          Campo obrigatório
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Nome do Devedor</mat-label>
+        <input matInput formControlName="debtorName" />
+        <mat-error *ngIf="debtForm.get('debtorName')?.hasError('required')">
+          Campo obrigatório
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>CPF</mat-label>
+        <input matInput formControlName="debtorCPF" mask="000.000.000-00" />
+        <mat-error *ngIf="debtForm.get('debtorCPF')?.errors">
+          CPF inválido
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Seção de Taxas -->
+    <div class="form-section">
+      <mat-form-field appearance="outline">
+        <mat-label>% Juros Mensal</mat-label>
+        <input matInput type="number" formControlName="interestRate" />
+        <span matSuffix>%</span>
+        <mat-error *ngIf="debtForm.get('interestRate')?.hasError('min')">
+          Valor mínimo: 0%
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>% Multa</mat-label>
+        <input matInput type="number" formControlName="fineRate" />
+        <span matSuffix>%</span>
+        <mat-error *ngIf="debtForm.get('fineRate')?.hasError('min')">
+          Valor mínimo: 0%
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Seção de Parcelas -->
+    <div class="parcelas-section">
+      <h3>Parcelas</h3>
+
+      <div formArrayName="installments">
+        <div
+          *ngFor="let installment of installments.controls; let i = index"
+          [formGroupName]="i"
+          class="parcela-item"
+        >
+          <mat-form-field appearance="outline">
+            <mat-label>Número</mat-label>
+            <input matInput type="number" formControlName="installmentNumber" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Vencimento</mat-label>
+            <input
+              matInput
+              [min]="minDate"
+              type="date"
+              formControlName="dueDate"
+            />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Valor</mat-label>
+            <input matInput type="number" step="0.01" formControlName="value" />
+          </mat-form-field>
+
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="removeInstallment(i)"
+            *ngIf="installments.length > 1"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+
+      <button
+        mat-raised-button
+        type="button"
+        color="primary"
+        (click)="addInstallment()"
+      >
+        <mat-icon>add</mat-icon>
+        Adicionar Parcela
+      </button>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="actions">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loading"
+      >
+        <mat-icon *ngIf="loading">
+          <mat-spinner diameter="20"></mat-spinner>
+        </mat-icon>
+        {{ loading ? "Salvando..." : "Salvar" }}
+      </button>
+
+      <button mat-button type="button">Cancelar</button>
+    </div>
+  </form>
+</div>

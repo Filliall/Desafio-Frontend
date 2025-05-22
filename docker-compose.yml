@@ -1,0 +1,13 @@
+frontend:
+  build:
+    context: ./frontend
+    dockerfile: Dockerfile
+  ports:
+    - "4200:4200"
+  volumes:
+    - ./frontend:/app
+    - /app/node_modules
+  depends_on:
+    - api
+  environment:
+    - NODE_ENV=development
